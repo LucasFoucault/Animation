@@ -15,7 +15,7 @@ namespace Animation
 		Interpolation();
 		~Interpolation();
 
-		Math::Vector4f ComputeHermite(float u, 
+		Math::Vector3f ComputeHermite(float u, 
 										 Math::Vector3f P0, 
 										 Math::Vector3f P1, 
 										 Math::Vector3f D0, 

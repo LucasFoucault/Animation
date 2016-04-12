@@ -11,7 +11,7 @@ Animation::Interpolation::Interpolation():
 Animation::Interpolation::~Interpolation()
 {}
 
-Math::Vector4f Animation::Interpolation::ComputeHermite(float u, 
+Math::Vector3f Animation::Interpolation::ComputeHermite(float u, 
 										 Math::Vector3f P0, 
 										 Math::Vector3f P1, 
 										 Math::Vector3f D0, 
@@ -27,4 +27,6 @@ Math::Vector4f Animation::Interpolation::ComputeHermite(float u,
 		for (int j=0; j<4; j++)
 			resultHermite[i] += uVector*m_coeffScalaire(i,j)*pdVector;
 	}
+
+	return resultHermite;
 }
