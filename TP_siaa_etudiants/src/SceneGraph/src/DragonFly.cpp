@@ -11,6 +11,7 @@ SceneGraph::DragonFly::DragonFly():
 		m_rightWingsRotation 		(new SceneGraph::Rotate(180.0f*Math::pi/180.0f, Math::makeVector(0.0f,0.0f,1.0f))),
 
 		// Translations	
+		m_tailTranslation			(new SceneGraph::Translate(Math::makeVector(-0.7f,0.0f,0.0f))),
 		m_leftUpWingTranslation 	(new SceneGraph::Translate(Math::makeVector(0.0f,-0.6f,0.0f))),
 		m_rightUpWingTranslation 	(new SceneGraph::Translate(Math::makeVector(0.0f,-0.6f,0.0f))),
 		m_leftDownWingTranslation 	(new SceneGraph::Translate(Math::makeVector(-0.7f,-0.6f,0.0f))),
@@ -22,6 +23,7 @@ SceneGraph::DragonFly::DragonFly():
 		
 		// Scales
 		m_scaleBody 				(new SceneGraph::Scale(Math::makeVector(1.0f,0.3f,0.3f))),
+		m_scaleTail					(new SceneGraph::Scale(Math::makeVector(3.0f, 0.1f, 0.1f))),
 		m_scaleWings 				(new SceneGraph::Scale(Math::makeVector(0.3f,0.6f,0.05f))),
 	
 	// Animation
@@ -34,6 +36,12 @@ SceneGraph::DragonFly::DragonFly():
 		HelperGl::Material bodyMaterial;
 		bodyMaterial.setDiffuse(bodyDiffuseColor);
 		m_body 					= new SceneGraph::Sphere(bodyMaterial);
+
+		// Tail
+		HelperGl::Color tailDiffuseColor(1.0f,1.0f,0.0f);
+		HelperGl::Material tailMaterial;
+		tailMaterial.setDiffuse(tailDiffuseColor);
+		m_tail					= new SceneGraph::Sphere(tailMaterial);
 
 		// Wings
 		HelperGl::Color wingsDiffuseColor(1.0,1.0,1.0,0.0);
@@ -68,6 +76,10 @@ void SceneGraph::DragonFly::buildSkeleton()
 {
 	this->addSon(m_scaleBody);
 		m_scaleBody->addSon(m_body);
+
+	this->addSon(m_scaleTail);
+		m_scaleTail->addSon(m_tailTranslation);
+			m_tailTranslation->addSon(m_tail);
 
 	this->addSon(m_leftArticulation);
 		m_leftArticulation->addSon(m_leftWingsRotation);
