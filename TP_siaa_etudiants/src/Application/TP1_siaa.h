@@ -62,8 +62,10 @@ namespace Application
 	public:
 		TP1_siaa():
 			t(0),
-			u(0.0f)
-		{}
+			u(0.0f)			
+		{
+			m_camera.translateLocal(Math::makeVector(0.0f, 0.0f, 10.0f));
+		}
 
 		virtual void initializeRendering()
 		{
