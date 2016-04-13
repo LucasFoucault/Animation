@@ -22,10 +22,11 @@ Math::Vector3f Animation::Interpolation::ComputeHermite(float u,
 
 	for(int i=0; i<3; i++)
 	{
-		Math::Vector4f pdVector = Math::makeVector(P0[i], P1[i], D0[i], D1[i]);
+		Math::Vector4f pdVector = Math::makeVector(P0[i],P1[i],D0[i],D1[i]);
+		Math::Vector4f rowMatrix = m_coeffScalaire.getRow(i);
 		
 		for (int j=0; j<4; j++)
-			resultHermite[i] += uVector*m_coeffScalaire(i,j)*pdVector;
+			resultHermite[i] += uVector[j] * rowMatrix[j] * pdVector[j];
 	}
 
 	return resultHermite;

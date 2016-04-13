@@ -9,6 +9,8 @@
 #include <Application/BaseWithKeyboard.h>
 #include <Application/KeyboardStatus.h>
 
+#include <Animation/Interpolation.h>
+
 #include <SceneGraph/Group.h>
 #include <SceneGraph/MeshVBO_v2.h>
 #include <SceneGraph/Sphere.h>
@@ -28,6 +30,7 @@ namespace Application
 		SceneGraph::Group m_root;
 		SceneGraph::DragonFly * dragonFly;
 		double t;
+		float u;
 
 		virtual void handleKeys() 
 		{
@@ -58,7 +61,8 @@ namespace Application
 
 	public:
 		TP1_siaa():
-			t(0)
+			t(0),
+			u(0.0f)
 		{}
 
 		virtual void initializeRendering()
@@ -83,6 +87,13 @@ namespace Application
 			handleKeys();
 			GL::loadMatrix(m_camera.getInverseTransform());
 			dragonFly->animate(t);
+
+			if (u<1.0f)
+			{
+				dragonFly->move(u);
+				u += 0.0001;
+			}	
+
 			m_root.draw();
 		}
 	};

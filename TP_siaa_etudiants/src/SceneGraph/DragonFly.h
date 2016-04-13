@@ -8,6 +8,8 @@
 
 #include <Application/BaseWithKeyboard.h>
 
+#include <Animation/Interpolation.h>
+
 #include <SceneGraph/Group.h>
 #include <SceneGraph/Sphere.h>
 #include <SceneGraph/Rotate.h>
@@ -43,6 +45,8 @@ namespace SceneGraph
 
 		// Transformations
 			// Rotations
+			SceneGraph::Rotate * m_dragonFlyRotation;
+
 			SceneGraph::Rotate * m_leftArticulation;
 			SceneGraph::Rotate * m_rightArticulation;
 
@@ -52,6 +56,8 @@ namespace SceneGraph
 			SceneGraph::Rotate * m_rightDownWingRotation;
 
 			// Translations
+			SceneGraph::Translate * m_dragonFlyTranslation;
+
 			SceneGraph::Translate * m_headTranslation;
 			SceneGraph::Translate * m_tailTranslation;
 
@@ -79,7 +85,9 @@ namespace SceneGraph
 
 		virtual ~DragonFly();
 
-		void animate(double dt);
+		void animate(double t);
+
+		void move(float u);
 
 	private:
 		void buildSkeleton();
