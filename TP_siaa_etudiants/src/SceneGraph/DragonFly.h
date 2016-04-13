@@ -24,6 +24,7 @@ namespace SceneGraph
 		//Geometries
 			// Body
 			SceneGraph::Sphere * m_body;
+			SceneGraph::Sphere * m_head;
 			SceneGraph::Sphere * m_tail;
 
 			// Chicken Wings
@@ -44,10 +45,14 @@ namespace SceneGraph
 			// Rotations
 			SceneGraph::Rotate * m_leftArticulation;
 			SceneGraph::Rotate * m_rightArticulation;
-			SceneGraph::Rotate * m_leftWingsRotation;
-			SceneGraph::Rotate * m_rightWingsRotation;
+
+			SceneGraph::Rotate * m_leftUpWingRotation;
+			SceneGraph::Rotate * m_rightUpWingRotation;
+			SceneGraph::Rotate * m_leftDownWingRotation;
+			SceneGraph::Rotate * m_rightDownWingRotation;
 
 			// Translations
+			SceneGraph::Translate * m_headTranslation;
 			SceneGraph::Translate * m_tailTranslation;
 
 			SceneGraph::Translate * m_leftUpWingTranslation;
@@ -62,6 +67,7 @@ namespace SceneGraph
 
 			// Scales
 			SceneGraph::Scale * m_scaleBody;
+			SceneGraph::Scale * m_scaleHead;
 			SceneGraph::Scale * m_scaleTail;
 			SceneGraph::Scale * m_scaleWings;
 
