@@ -33,6 +33,8 @@ namespace Application
 		SceneGraph::Translate * dragonFlyTranslation;
 		SceneGraph::Rotate * dragonFlyRotation;
 
+		Animation::Interpolation * dragonFlyInterpolation;
+
 		double t;
 		float u;
 
@@ -87,6 +89,14 @@ namespace Application
 			dragonFlyTranslation = new SceneGraph::Translate();
 			dragonFlyRotation = new SceneGraph::Rotate(0,Math::makeVector(0,0,0));
 
+			// Interpolation
+			dragonFlyInterpolation = new Animation::Interpolation(	
+																	Math::makeVector(0,0,0),
+																	Math::makeVector(0,0,0),
+																	Math::makeVector(3,3,3),
+																	Math::makeVector(0,1,0)
+																 );
+
 			// SceneGraph
 			m_root.addSon(dragonFlyTranslation);
 				dragonFlyTranslation->addSon(dragonFlyRotation);
@@ -99,6 +109,13 @@ namespace Application
 			handleKeys();
 			GL::loadMatrix(m_camera.getInverseTransform());
 			dragonFly->animate(t);
+
+			float ts = std::floor(t);
+			u = t - ts;
+
+			dragonFlyTranslation->setTranslation(dragonFlyInterpolation->ComputeHermite(u));
+
+			m_root.draw();
 		}
 	};
 }
