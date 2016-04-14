@@ -29,6 +29,10 @@ namespace Application
 		HelperGl::Camera m_camera;
 		SceneGraph::Group m_root;
 		SceneGraph::DragonFly * dragonFly;
+
+		SceneGraph::Translate * dragonFlyTranslation;
+		SceneGraph::Rotate * dragonFlyRotation;
+
 		double t;
 		float u;
 
@@ -79,8 +83,14 @@ namespace Application
 			// DragonFly
 			dragonFly = new SceneGraph::DragonFly();
 
+			// Transformation
+			dragonFlyTranslation = new SceneGraph::Translate();
+			dragonFlyRotation = new SceneGraph::Rotate(0,Math::makeVector(0,0,0));
+
 			// SceneGraph
-			m_root.addSon(dragonFly);
+			m_root.addSon(dragonFlyTranslation);
+				dragonFlyTranslation->addSon(dragonFlyRotation);
+					dragonFlyRotation->addSon(dragonFly);
 		}
 
 		virtual void render(double dt)
@@ -89,14 +99,6 @@ namespace Application
 			handleKeys();
 			GL::loadMatrix(m_camera.getInverseTransform());
 			dragonFly->animate(t);
-
-			if (u<1.0f)
-			{
-				dragonFly->move(u);
-				u += 0.0001;
-			}	
-
-			m_root.draw();
 		}
 	};
 }
