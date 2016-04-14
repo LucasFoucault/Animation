@@ -11,14 +11,14 @@ namespace Animation
 	private:
 		Math::Matrix4x4f m_coeffScalaire;
 		Math::Vector3f m_P0;
-		Math::Vector3f m_P1;
 		Math::Vector3f m_D0;
+		Math::Vector3f m_P1;
 		Math::Vector3f m_D1;
 
 	public:
 		Interpolation(Math::Vector3f P0,
-					  Math::Vector3f P1,
 					  Math::Vector3f D0,
+					  Math::Vector3f P1,
 					  Math::Vector3f D1);
 		~Interpolation();
 
