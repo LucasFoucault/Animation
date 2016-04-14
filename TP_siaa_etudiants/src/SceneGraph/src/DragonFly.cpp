@@ -5,8 +5,6 @@ SceneGraph::DragonFly::DragonFly():
 
 	// Transformations
 		// Rotations
-		m_dragonFlyRotation			(new SceneGraph::Rotate(0.0f, Math::makeVector(0.0f,0.0f,0.0f))),
-
 		m_leftArticulation 			(new SceneGraph::Rotate(0.0f,Math::makeVector(1.0f,0.0f,0.0f))),
 		m_rightArticulation 		(new SceneGraph::Rotate(0.0f, Math::makeVector(1.0f,0.0f,0.0f))),
 		
@@ -16,8 +14,6 @@ SceneGraph::DragonFly::DragonFly():
 		m_rightDownWingRotation		(new SceneGraph::Rotate(185.0f*Math::pi/180.0f, Math::makeVector(0.0f,0.0f,1.0f))),
 
 		// Translations
-		m_dragonFlyTranslation		(new SceneGraph::Translate(Math::makeVector(0.0f,0.0f,0.0f))),
-
 		m_headTranslation			(new SceneGraph::Translate(Math::makeVector(0.7f,0.0f,0.0f))),
 		m_tailTranslation			(new SceneGraph::Translate(Math::makeVector(-0.8f,0.0f,0.0f))),
 		
@@ -90,46 +86,41 @@ SceneGraph::DragonFly::~DragonFly()
 
 void SceneGraph::DragonFly::buildSkeleton()
 {
-	this->addSon(m_dragonFlyTranslation);
-		m_dragonFlyTranslation->addSon(m_dragonFlyRotation);
+	this->addSon(m_scaleBody);
+		m_scaleBody->addSon(m_body);
 
-			m_dragonFlyRotation->addSon(m_scaleBody);
-				m_scaleBody->addSon(m_body);
+	this->addSon(m_scaleTail);
+		m_scaleTail->addSon(m_tailTranslation);
+			m_tailTranslation->addSon(m_tail);
 
-			m_dragonFlyRotation->addSon(m_scaleTail);
-				m_scaleTail->addSon(m_tailTranslation);
-					m_tailTranslation->addSon(m_tail);
+	this->addSon(m_headTranslation);
+		m_headTranslation->addSon(m_scaleHead);
+			m_scaleHead->addSon(m_head);
+		m_headTranslation->addSon(m_leftEyeTranslation);
+			m_leftEyeTranslation->addSon(m_leftEye);
+		m_headTranslation->addSon(m_rightEyeTranslation);
+			m_rightEyeTranslation->addSon(m_rightEye);
 
-			m_dragonFlyRotation->addSon(m_headTranslation);
-				m_headTranslation->addSon(m_scaleHead);
-					m_scaleHead->addSon(m_head);
-				m_headTranslation->addSon(m_leftEyeTranslation);
-					m_leftEyeTranslation->addSon(m_leftEye);
-					//m_leftEyeTranslation->addSon(m_pupilsTranslation);
-						//m_pupilsTranslation->addSon(m_leftPupil);
-				m_headTranslation->addSon(m_rightEyeTranslation);
-					m_rightEyeTranslation->addSon(m_rightEye);
-					//m_rightEyeTranslation->addSon(m_pupilsTranslation);
-						//m_pupilsTranslation->addSon(m_rightPupil);
-	
-			m_dragonFlyRotation->addSon(m_leftArticulation);
-				m_leftArticulation->addSon(m_leftUpWingRotation);
-					m_leftUpWingRotation->addSon(m_leftUpWingTranslation);
-						m_leftUpWingTranslation->addSon(m_scaleWings);
-							m_scaleWings->addSon(m_leftUpWing);
-				m_leftArticulation->addSon(m_leftDownWingRotation);
-					m_leftDownWingRotation->addSon(m_leftDownWingTranslation);
-						m_leftDownWingTranslation->addSon(m_scaleWings);
-							m_scaleWings->addSon(m_leftDownWing); 
-			m_dragonFlyRotation->addSon(m_rightArticulation);
-				m_rightArticulation->addSon(m_rightUpWingRotation);
-					m_rightUpWingRotation->addSon(m_rightUpWingTranslation);
-						m_rightUpWingTranslation->addSon(m_scaleWings);
-							m_scaleWings->addSon(m_rightUpWing);
-				m_rightArticulation->addSon(m_rightDownWingRotation);
-					m_rightDownWingRotation->addSon(m_rightDownWingTranslation);
-						m_rightDownWingTranslation->addSon(m_scaleWings);
-							m_scaleWings->addSon(m_rightDownWing);
+
+	this->addSon(m_leftArticulation);
+		m_leftArticulation->addSon(m_leftUpWingRotation);
+			m_leftUpWingRotation->addSon(m_leftUpWingTranslation);
+				m_leftUpWingTranslation->addSon(m_scaleWings);
+					m_scaleWings->addSon(m_leftUpWing);
+		m_leftArticulation->addSon(m_leftDownWingRotation);
+			m_leftDownWingRotation->addSon(m_leftDownWingTranslation);
+				m_leftDownWingTranslation->addSon(m_scaleWings);
+					m_scaleWings->addSon(m_leftDownWing); 
+
+	this->addSon(m_rightArticulation);
+		m_rightArticulation->addSon(m_rightUpWingRotation);
+			m_rightUpWingRotation->addSon(m_rightUpWingTranslation);
+				m_rightUpWingTranslation->addSon(m_scaleWings);
+					m_scaleWings->addSon(m_rightUpWing);
+		m_rightArticulation->addSon(m_rightDownWingRotation);
+			m_rightDownWingRotation->addSon(m_rightDownWingTranslation);
+				m_rightDownWingTranslation->addSon(m_scaleWings);
+					m_scaleWings->addSon(m_rightDownWing);
 }
 
 void SceneGraph::DragonFly::animate(double t)
@@ -137,18 +128,4 @@ void SceneGraph::DragonFly::animate(double t)
 	float m_wingsAngle = WINGS_ANGLE_LIMIT*std::cos(m_wingsSpeed*t);
 	m_leftArticulation->setAngle(m_wingsAngle*Math::pi/180.0f);
 	m_rightArticulation->setAngle(-m_wingsAngle*Math::pi/180.0f);
-}
-
-void SceneGraph::DragonFly::move(float u)
-{
-	Math::Vector3f P0 = Math::makeVector(0.0f,0.0f,0.0f);
-	Math::Vector3f P1 = Math::makeVector(1.0f,1.0f,1.0f);
-	Math::Vector3f D0 = Math::makeVector(0.0f,0.0f,0.0f);
-	Math::Vector3f D1 = Math::makeVector(0.0f,1.0f,0.0f);
-	
-	Animation::Interpolation * interpolation = new Animation::Interpolation(P0,P1,D0,D1);
-	
-	Math::Vector3f resultHermite = interpolation->ComputeHermite(u);
-	
-	m_dragonFlyTranslation->setTranslation(resultHermite);
 }
