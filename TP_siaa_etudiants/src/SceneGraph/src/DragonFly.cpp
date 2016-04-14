@@ -144,9 +144,10 @@ void SceneGraph::DragonFly::move(float u)
 	Animation::Interpolation * interpolation = new Animation::Interpolation();
 
 	Math::Vector3f P0 = Math::makeVector(0.0f,0.0f,0.0f);
-	Math::Vector3f P1 = Math::makeVector(3.0f,3.0f,3.0f);
+	Math::Vector3f P1 = Math::makeVector(1.0f,1.0f,1.0f);
 	Math::Vector3f D0 = Math::makeVector(0.0f,0.0f,0.0f);
 	Math::Vector3f D1 = Math::makeVector(0.0f,1.0f,0.0f);
+
 
 	Math::Vector3f resultHermite = interpolation->ComputeHermite(u,P0,P1,D0,D1);
 	
