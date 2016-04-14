@@ -30,6 +30,7 @@ namespace Application
 		SceneGraph::Group m_root;
 		SceneGraph::DragonFly * dragonFly;
 		double t;
+		float speed;
 		float u;
 
 		virtual void handleKeys() 
@@ -62,7 +63,8 @@ namespace Application
 	public:
 		TP1_siaa():
 			t(0),
-			u(0.0f)			
+			speed(0.2f),
+			u(0.0f)
 		{
 			m_camera.translateLocal(Math::makeVector(0.0f, 0.0f, 10.0f));
 		}
@@ -90,11 +92,10 @@ namespace Application
 			GL::loadMatrix(m_camera.getInverseTransform());
 			dragonFly->animate(t);
 
-			if (u<1.0f)
-			{
-				dragonFly->move(u);
-				u += 0.0001;
-			}	
+			float ts = std::floor(t);
+			u = t - ts;
+			
+			dragonFly->move(u);
 
 			m_root.draw();
 		}
