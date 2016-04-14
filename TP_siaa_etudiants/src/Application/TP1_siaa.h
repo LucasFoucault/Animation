@@ -113,7 +113,12 @@ namespace Application
 			float ts = std::floor(t);
 			u = t - ts;
 
-			dragonFlyTranslation->setTranslation(dragonFlyInterpolation->ComputeHermite(u));
+			dragonFlyTranslation->setTranslation(dragonFlyInterpolation->HermiteCompute(u));
+			
+			Math::Vector3f speedVector = dragonFlyInterpolation->HermiteCompute(u,1);
+			float angle = acos(Math::makeVector(1,0,0)*speedVector);
+			dragonFlyRotation->setAxis(Math::makeVector(0,0,1));
+			//dragonFlyRotation->setAngle(angle);
 
 			m_root.draw();
 		}

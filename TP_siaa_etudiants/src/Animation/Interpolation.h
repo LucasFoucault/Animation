@@ -22,9 +22,11 @@ namespace Animation
 					  Math::Vector3f D1);
 		~Interpolation();
 
-		Math::Vector3f ComputeHermite(float u);
+		Math::Vector3f HermiteCompute(float u, int d=0);
 
-		float ComputeSpeed(float u);
+		float speedCompute(float u);
+
+		float accelerationCompute(float u);
 	};
 }
 
