@@ -29,6 +29,12 @@ namespace Application
 		HelperGl::Camera m_camera;
 		SceneGraph::Group m_root;
 		SceneGraph::DragonFly * dragonFly;
+
+		SceneGraph::Translate * dragonFlyTranslation;
+		SceneGraph::Rotate * dragonFlyRotation;
+
+		Animation::Interpolation * dragonFlyInterpolation;
+
 		double t;
 		float u;
 
@@ -64,7 +70,7 @@ namespace Application
 			t(0),
 			u(0.0f)			
 		{
-			m_camera.translateLocal(Math::makeVector(0.0f, 0.0f, 20.0f));
+			m_camera.translateLocal(Math::makeVector(0.0f, 0.0f, 10.0f));
 		}
 
 		virtual void initializeRendering()
@@ -79,8 +85,22 @@ namespace Application
 			// DragonFly
 			dragonFly = new SceneGraph::DragonFly();
 
+			// Transformation
+			dragonFlyTranslation = new SceneGraph::Translate();
+			dragonFlyRotation = new SceneGraph::Rotate(0,Math::makeVector(0,0,0));
+
+			// Interpolation
+			dragonFlyInterpolation = new Animation::Interpolation(	
+																	Math::makeVector(0,0,0),
+																	Math::makeVector(0,0,0),
+																	Math::makeVector(3,3,3),
+																	Math::makeVector(0,1,0)
+																 );
+
 			// SceneGraph
-			m_root.addSon(dragonFly);
+			m_root.addSon(dragonFlyTranslation);
+				dragonFlyTranslation->addSon(dragonFlyRotation);
+					dragonFlyRotation->addSon(dragonFly);
 		}
 
 		virtual void render(double dt)
@@ -90,11 +110,15 @@ namespace Application
 			GL::loadMatrix(m_camera.getInverseTransform());
 			dragonFly->animate(t);
 
-			if (u<1.0f)
-			{
-				dragonFly->move(u);
-				u += 0.0001;
-			}	
+			float ts = std::floor(t);
+			u = t - ts;
+
+			dragonFlyTranslation->setTranslation(dragonFlyInterpolation->HermiteCompute(u));
+			
+			Math::Vector3f speedVector = dragonFlyInterpolation->HermiteCompute(u,1);
+			float angle = acos(Math::makeVector(1,0,0)*speedVector);
+			dragonFlyRotation->setAxis(Math::makeVector(0,0,1));
+			//dragonFlyRotation->setAngle(angle);
 
 			m_root.draw();
 		}
