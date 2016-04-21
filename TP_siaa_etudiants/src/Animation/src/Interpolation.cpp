@@ -22,11 +22,11 @@ Math::Vector3f Animation::Interpolation::HermiteCompute(float u, int d)
 {
 	Math::Vector4f uVector;
 
-	if(d==0)
+	if(d==0)		// Aucune dérivée appliquée
 		uVector = Math::makeVector(pow(u,3),pow(u,2),u,1.0f);
-	else if(d==1)
+	else if(d==1)	// Dérivée du premier degré
 		uVector = Math::makeVector(3*pow(u,2),2*u,1.0f,0.0f);
-	else if(d==2)
+	else if(d==2)	// Dérivée du second degré
 		uVector = Math::makeVector(6*u,2.0f,0.0f,0.0f);
 
 	Math::Vector3f hermiteResult = Math::makeVector(0.0f,0.0f,0.0f);

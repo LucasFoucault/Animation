@@ -21,6 +21,8 @@
 
 #include <GL/compatibility.h>
 
+#define PI 3.14159265
+
 namespace Application
 {
 	class TP1_siaa : public BaseWithKeyboard
@@ -31,7 +33,9 @@ namespace Application
 		SceneGraph::DragonFly * dragonFly;
 
 		SceneGraph::Translate * dragonFlyTranslation;
-		SceneGraph::Rotate * dragonFlyRotation;
+		SceneGraph::Rotate * dragonFlyRotationX;
+		SceneGraph::Rotate * dragonFlyRotationY;
+		SceneGraph::Rotate * dragonFlyRotationZ;
 
 		Animation::Interpolation * dragonFlyInterpolation;
 
@@ -87,20 +91,24 @@ namespace Application
 
 			// Transformation
 			dragonFlyTranslation = new SceneGraph::Translate();
-			dragonFlyRotation = new SceneGraph::Rotate(0,Math::makeVector(0,0,0));
+			dragonFlyRotationX = new SceneGraph::Rotate(0,Math::makeVector(0,0,0));
+			dragonFlyRotationY = new SceneGraph::Rotate(0, Math::makeVector(0, 0, 0));
+			dragonFlyRotationZ = new SceneGraph::Rotate(0, Math::makeVector(0, 0, 0));
 
 			// Interpolation
 			dragonFlyInterpolation = new Animation::Interpolation(	
 																	Math::makeVector(0,0,0),
-																	Math::makeVector(0,0,0),
+																	Math::makeVector(-10,0,-20),
 																	Math::makeVector(3,3,3),
-																	Math::makeVector(0,1,0)
+																	Math::makeVector(10,0,20)
 																 );
 
 			// SceneGraph
 			m_root.addSon(dragonFlyTranslation);
-				dragonFlyTranslation->addSon(dragonFlyRotation);
-					dragonFlyRotation->addSon(dragonFly);
+				dragonFlyTranslation->addSon(dragonFlyRotationX);
+					dragonFlyRotationX->addSon(dragonFlyRotationY);
+						dragonFlyRotationY->addSon(dragonFlyRotationZ);
+							dragonFlyRotationZ->addSon(dragonFly);
 		}
 
 		virtual void render(double dt)
@@ -116,9 +124,22 @@ namespace Application
 			dragonFlyTranslation->setTranslation(dragonFlyInterpolation->HermiteCompute(u));
 			
 			Math::Vector3f speedVector = dragonFlyInterpolation->HermiteCompute(u,1);
-			float angle = acos(Math::makeVector(1,0,0)*speedVector);
-			dragonFlyRotation->setAxis(Math::makeVector(0,0,1));
-			//dragonFlyRotation->setAngle(angle);
+
+			// ROTATION EN Z
+			// theta = arcos (u.v / norm(u)*norm(v))
+			double paramX = (Math::makeVector(1,0,0)*speedVector) / (Math::makeVector(1,0,0).norm()*speedVector.norm());
+			float angleZ = acos(paramX);
+
+			dragonFlyRotationZ->setAxis(Math::makeVector(0,0,1));
+			dragonFlyRotationZ->setAngle(angleZ);
+
+			// ROTATION EN Y
+			// theta = arcos (u.v / norm(u)*norm(v))
+			double paramZ = (Math::makeVector(0,0,1)*speedVector) / (Math::makeVector(0,0,1).norm()*speedVector.norm());
+			float angleY = acos(paramZ);
+
+			dragonFlyRotationY->setAxis(Math::makeVector(0,1,0));
+			dragonFlyRotationY->setAngle(-angleY);
 
 			m_root.draw();
 		}
