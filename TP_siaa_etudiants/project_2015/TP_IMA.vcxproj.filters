@@ -278,5 +278,8 @@
     <ClInclude Include="..\src\Animation\Interpolation.h">
       <Filter>src\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Application\TP2_siaa.h">
+      <Filter>src\Application</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
