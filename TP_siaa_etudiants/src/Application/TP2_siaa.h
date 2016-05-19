@@ -140,7 +140,7 @@ namespace Application
 			StaticNode * thirdNode  = chainRoot->addStaticEulerRotation(secondNode,0,firstRotate->getAngle(),0);
 
 			root->addSon(firstTranslate);
-				firstTranslate->addSon(firstRotate);
+				firstTranslate->addSon(firstRotate);0
 					firstRotate->addSon(firstCylinder);
 
 			SceneGraph::Transform * lastNode = firstTranslate;

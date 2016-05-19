@@ -10,6 +10,7 @@
 #include <Application/KeyboardStatus.h>
 
 #include <Animation/Interpolation.h>
+#include <Animation/Journey.h>
 
 #include <SceneGraph/Group.h>
 #include <SceneGraph/MeshVBO_v2.h>
@@ -37,10 +38,9 @@ namespace Application
 		SceneGraph::Rotate * dragonFlyRotationY;
 		SceneGraph::Rotate * dragonFlyRotationZ;
 
-		Animation::Interpolation * dragonFlyInterpolation;
+		Animation::Journey * TheJourney;
 
 		double t;
-		float u;
 
 		virtual void handleKeys() 
 		{
@@ -71,10 +71,9 @@ namespace Application
 
 	public:
 		TP1_siaa():
-			t(0),
-			u(0.0f)			
+			t(0)		
 		{
-			m_camera.translateLocal(Math::makeVector(0.0f, 0.0f, 10.0f));
+			m_camera.translateLocal(Math::makeVector(0.0f, 0.0f, 30.0f));
 		}
 
 		virtual void initializeRendering()
@@ -92,16 +91,19 @@ namespace Application
 			// Transformation
 			dragonFlyTranslation = new SceneGraph::Translate();
 			dragonFlyRotationX = new SceneGraph::Rotate(0,Math::makeVector(0,0,0));
-			dragonFlyRotationY = new SceneGraph::Rotate(0, Math::makeVector(0, 0, 0));
-			dragonFlyRotationZ = new SceneGraph::Rotate(0, Math::makeVector(0, 0, 0));
+			dragonFlyRotationY = new SceneGraph::Rotate(0,Math::makeVector(0,0,0));
+			dragonFlyRotationZ = new SceneGraph::Rotate(0,Math::makeVector(0,0,0));
 
 			// Interpolation
-			dragonFlyInterpolation = new Animation::Interpolation(	
-																	Math::makeVector(0,0,0),
-																	Math::makeVector(-10,0,-20),
-																	Math::makeVector(3,3,3),
-																	Math::makeVector(10,0,20)
-																 );
+			vector<Math::Vector3f> *v = new vector<Math::Vector3f>();
+			v->push_back(Math::makeVector(-10,-10,0));
+			v->push_back(Math::makeVector(10,0,0));
+			v->push_back(Math::makeVector(10,-10,0));
+			v->push_back(Math::makeVector(10,0,0));
+			v->push_back(Math::makeVector(10,10,3));
+			v->push_back(Math::makeVector(0,1,0));
+
+			TheJourney = new Animation::Journey(v);
 
 			// SceneGraph
 			m_root.addSon(dragonFlyTranslation);
@@ -119,11 +121,12 @@ namespace Application
 			dragonFly->animate(t);
 
 			float ts = std::floor(t);
-			u = t - ts;
+			float u = t - ts;
 
-			dragonFlyTranslation->setTranslation(dragonFlyInterpolation->HermiteCompute(u));
-			
-			Math::Vector3f speedVector = dragonFlyInterpolation->HermiteCompute(u,1);
+			dragonFlyTranslation->setTranslation(TheJourney->compute(ts,u));
+			Math::Vector3f speedVector = TheJourney->interpolationSpeed(ts,u);
+
+			cout << "speedVector : " << speedVector << endl;
 
 			// ROTATION EN Z
 			// theta = arcos (u.v / norm(u)*norm(v))
@@ -133,13 +136,15 @@ namespace Application
 			dragonFlyRotationZ->setAxis(Math::makeVector(0,0,1));
 			dragonFlyRotationZ->setAngle(angleZ);
 
-			// ROTATION EN Y
-			// theta = arcos (u.v / norm(u)*norm(v))
-			double paramZ = (Math::makeVector(0,0,1)*speedVector) / (Math::makeVector(0,0,1).norm()*speedVector.norm());
-			float angleY = acos(paramZ);
+			cout << "Angle Z : " << angleZ << endl;
 
-			dragonFlyRotationY->setAxis(Math::makeVector(0,1,0));
-			dragonFlyRotationY->setAngle(-angleY);
+			//// ROTATION EN Y
+			//// theta = arcos (u.v / norm(u)*norm(v))
+			//double paramZ = (Math::makeVector(0,0,1)*speedVector) / (Math::makeVector(0,0,1).norm()*speedVector.norm());
+			//float angleY = acos(paramZ);
+
+			//dragonFlyRotationY->setAxis(Math::makeVector(0,1,0));
+			//dragonFlyRotationY->setAngle(-angleY);
 
 			m_root.draw();
 		}

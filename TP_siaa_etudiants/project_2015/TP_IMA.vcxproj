@@ -107,6 +107,7 @@ copy "$(ProjectDir)\..\..\dependencies_ima\lib2015\$(Configuration)\*.dll" "$(Ou
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Animation\src\Interpolation.cpp" />
+    <ClCompile Include="..\src\Animation\src\Journey.cpp" />
     <ClCompile Include="..\src\Animation\src\KinematicChain.cpp" />
     <ClCompile Include="..\src\Animation\src\SpringMassSystem.cpp" />
     <ClCompile Include="..\src\Application\src\ApplicationSelection.cpp" />
@@ -131,6 +132,7 @@ copy "$(ProjectDir)\..\..\dependencies_ima\lib2015\$(Configuration)\*.dll" "$(Ou
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Animation\Interpolation.h" />
+    <ClInclude Include="..\src\Animation\Journey.h" />
     <ClInclude Include="..\src\Animation\KinematicChain.h" />
     <ClInclude Include="..\src\Animation\Particle.h" />
     <ClInclude Include="..\src\Animation\ParticleSystem.h" />
