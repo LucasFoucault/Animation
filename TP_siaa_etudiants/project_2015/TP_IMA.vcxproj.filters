@@ -111,7 +111,10 @@
     <ClCompile Include="..\src\Animation\src\Interpolation.cpp">
       <Filter>src\Animation\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Animation\src\Journey.cpp" />
+    <ClCompile Include="..\src\Animation\src\Journey.cpp">
+      <Filter>src\Animation\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Animation\src\CyclicCoordinateDescent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Math\Vector.h">
@@ -282,6 +285,9 @@
     <ClInclude Include="..\src\Application\TP2_siaa.h">
       <Filter>src\Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Animation\Journey.h" />
+    <ClInclude Include="..\src\Animation\Journey.h">
+      <Filter>src\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Animation\CyclicCoordinateDescent.h" />
   </ItemGroup>
 </Project>

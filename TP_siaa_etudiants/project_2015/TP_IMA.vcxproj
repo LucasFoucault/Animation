@@ -106,6 +106,7 @@ copy "$(ProjectDir)\..\..\dependencies_ima\lib2015\$(Configuration)\*.dll" "$(Ou
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Animation\src\CyclicCoordinateDescent.cpp" />
     <ClCompile Include="..\src\Animation\src\Interpolation.cpp" />
     <ClCompile Include="..\src\Animation\src\Journey.cpp" />
     <ClCompile Include="..\src\Animation\src\KinematicChain.cpp" />
@@ -131,6 +132,7 @@ copy "$(ProjectDir)\..\..\dependencies_ima\lib2015\$(Configuration)\*.dll" "$(Ou
     <ClCompile Include="..\src\System\src\Path.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Animation\CyclicCoordinateDescent.h" />
     <ClInclude Include="..\src\Animation\Interpolation.h" />
     <ClInclude Include="..\src\Animation\Journey.h" />
     <ClInclude Include="..\src\Animation\KinematicChain.h" />

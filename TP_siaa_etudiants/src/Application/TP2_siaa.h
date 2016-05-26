@@ -116,6 +116,9 @@ namespace Application
 
 			// SceneGraph
 			m_root.addSon(buildChain(chainSize));
+
+			// CCD
+			ccd = new CyclicCoordinateDescent(&m_rootChain, extremity);
 		}
 
 		SceneGraph::Group * buildChain(int chainSize)
@@ -137,10 +140,9 @@ namespace Application
 			SceneGraph::Cylinder * firstCylinder = new SceneGraph::Cylinder(chainMaterial, CYLINDER_RADIUS, CYLINDER_RADIUS, CYLINDER_HEIGHT);
 			
 			StaticNode * secondNode = chainRoot->addStaticTranslation(firstNode,firstTranslate->getTranslation());
-			StaticNode * thirdNode  = chainRoot->addStaticEulerRotation(secondNode,0,firstRotate->getAngle(),0);
 
 			root->addSon(firstTranslate);
-				firstTranslate->addSon(firstRotate);0
+				firstTranslate->addSon(firstRotate);
 					firstRotate->addSon(firstCylinder);
 
 			SceneGraph::Transform * lastNode = firstTranslate;
@@ -151,8 +153,7 @@ namespace Application
 				SceneGraph::Rotate * firstLibertyDegree  = new SceneGraph::Rotate(0,Math::makeVector(0,1,0));
 				SceneGraph::Rotate * secondLibertyDegree = new SceneGraph::Rotate(0,Math::makeVector(0,0,1));
 
-				StaticNode * sn1  = chainRoot->addStaticTranslation(firstNode,t1->getTranslation());
-				DynamicNode * dn1 = chainRoot->addDynamicRotation(sn1,Math::makeVector(0,1,0),Math::makeInterval((float)-Math::pi/2,(float)Math::pi/2),0);
+				DynamicNode * dn1 = chainRoot->addDynamicRotation(secondNode,Math::makeVector(0,1,0),Math::makeInterval((float)-Math::pi/2,(float)Math::pi/2),0);
 				DynamicNode * dn2 = chainRoot->addDynamicRotation(dn1,Math::makeVector(0,0,1),Math::makeInterval((float)-Math::pi/2,(float)Math::pi/2),0);
 
 				lastNode->addSon(t1);
@@ -161,18 +162,17 @@ namespace Application
 							secondLibertyDegree->addSon(new SceneGraph::Sphere(articulationMaterial, SPHERE_RADIUS));
 				lastNode = secondLibertyDegree;
 
-
-
 				SceneGraph::Translate * t2 = new SceneGraph::Translate(Math::makeVector(SPHERE_RADIUS/2,0.0f,0.0f));
 				SceneGraph::Rotate * r2 = new SceneGraph::Rotate(90.0f*Math::pi/180.0f, Math::makeVector(0,1,0));
 				
-				StaticNode * sn2 = chainRoot->addStaticTranslation(dn2,t2->getTranslation());
-				StaticNode * sn3 = chainRoot->addStaticEulerRotation(sn2,0,r2->getAngle(),0);
+				StaticNode * sn1 = chainRoot->addStaticTranslation(dn2,t2->getTranslation());
 
 				lastNode->addSon(t2);
 					t2->addSon(r2);
 						r2->addSon(new SceneGraph::Cylinder(chainMaterial,CYLINDER_RADIUS,CYLINDER_RADIUS,CYLINDER_HEIGHT));
 				lastNode = t2;
+
+				secondNode = sn1;
 			}
 
 			return root;
@@ -180,10 +180,14 @@ namespace Application
 
 		virtual void render(double dt)
 		{
-			t += dt;
 			handleKeys();
 			GL::loadMatrix(m_camera.getInverseTransform());
+
+			m_ccd
+
 			m_root.draw();
+
+
 		}
 	};
 }
