@@ -37,15 +37,9 @@ namespace Application
 	protected:
 		HelperGl::Camera m_camera;
 		SceneGraph::Group m_root;
-		SceneGraph::DragonFly * dragonFly;
-
-		SceneGraph::Translate * dragonFlyTranslation;
-		SceneGraph::Rotate * dragonFlyRotationX;
-		SceneGraph::Rotate * dragonFlyRotationY;
-		SceneGraph::Rotate * dragonFlyRotationZ;
-
-		Animation::Interpolation * dragonFlyInterpolation;
-
+		Animation::KinematicChain m_kinematicChainRoot;
+		Animation::Journey * TheJourney;
+		
 		double t;
 		float u;
 
@@ -93,39 +87,32 @@ namespace Application
 			HelperGl::LightServer::Light * light = HelperGl::LightServer::getSingleton()->createLight(lightPosition.popBack(), lightColor, lightColor, lightColor);
 			light->enable();	
 
-			// DragonFly
-			dragonFly = new SceneGraph::DragonFly();
-
-			// Transformation
-			dragonFlyTranslation = new SceneGraph::Translate();
-			dragonFlyRotationX = new SceneGraph::Rotate(0,Math::makeVector(0,0,0));
-			dragonFlyRotationY = new SceneGraph::Rotate(0, Math::makeVector(0,0,0));
-			dragonFlyRotationZ = new SceneGraph::Rotate(0, Math::makeVector(0,0,0));
-
-			// Interpolation
-			dragonFlyInterpolation = new Animation::Interpolation(	
-																	Math::makeVector(0,0,0),
-																	Math::makeVector(-10,0,-20),
-																	Math::makeVector(3,3,3),
-																	Math::makeVector(10,0,20)
-																 );
-
 			int chainSize;
 			std::cout << "Enter the size of the chain: " << std::endl;
 			std::cin >> chainSize;
 
 			// SceneGraph
-			m_root.addSon(buildChain(chainSize));
+			StaticNode * lastKinematicNode;
+			m_root.addSon(buildChain(chainSize,lastKinematicNode));
 
-			// CCD
-			ccd = new CyclicCoordinateDescent(&m_rootChain, extremity);
+			// Interpolation
+			vector<Math::Vector3f> *v = new vector<Math::Vector3f>();
+			v->push_back(Math::makeVector(lastKinematicNode->getGlobalTransformation()(0, 3), lastKinematicNode->getGlobalTransformation()(1, 3), lastKinematicNode->getGlobalTransformation()(2, 3)));
+			v->push_back(Math::makeVector(10, 0, 0));
+			v->push_back(Math::makeVector(10, 10, 3));
+			v->push_back(Math::makeVector(0, 1, 0));
+
+			TheJourney = new Animation::Journey(v);
+
+
+
+			// SceneGraph
+			m_root.addSon(buildChain(chainSize));
 		}
 
-		SceneGraph::Group * buildChain(int chainSize)
+		SceneGraph::Group * buildChain(int chainSize, StaticNode * lastKinematicNode)
 		{
 			SceneGraph::Group * root = new SceneGraph::Group();
-			KinematicChain * chainRoot = new KinematicChain();
-			StaticNode * firstNode = new StaticNode();
 
 			HelperGl::Color chainDiffuseColor(0.0f,0.0f,1.0f);
 			HelperGl::Material chainMaterial;
@@ -140,6 +127,7 @@ namespace Application
 			SceneGraph::Cylinder * firstCylinder = new SceneGraph::Cylinder(chainMaterial, CYLINDER_RADIUS, CYLINDER_RADIUS, CYLINDER_HEIGHT);
 			
 			StaticNode * secondNode = chainRoot->addStaticTranslation(firstNode,firstTranslate->getTranslation());
+			StaticNode * thirdNode  = chainRoot->addStaticEulerRotation(secondNode,0,firstRotate->getAngle(),0);
 
 			root->addSon(firstTranslate);
 				firstTranslate->addSon(firstRotate);
@@ -147,13 +135,15 @@ namespace Application
 
 			SceneGraph::Transform * lastNode = firstTranslate;
 
+
 			for(int i=0; i<chainSize-1; i++)
 			{
 				SceneGraph::Translate * t1 = new SceneGraph::Translate(Math::makeVector(CYLINDER_HEIGHT + SPHERE_RADIUS/2,0.0f,0.0f)); // 2 + SPHERE_RADIUS/2 - 0.04f
 				SceneGraph::Rotate * firstLibertyDegree  = new SceneGraph::Rotate(0,Math::makeVector(0,1,0));
 				SceneGraph::Rotate * secondLibertyDegree = new SceneGraph::Rotate(0,Math::makeVector(0,0,1));
 
-				DynamicNode * dn1 = chainRoot->addDynamicRotation(secondNode,Math::makeVector(0,1,0),Math::makeInterval((float)-Math::pi/2,(float)Math::pi/2),0);
+				StaticNode * sn1  = chainRoot->addStaticTranslation(firstNode,t1->getTranslation());
+				DynamicNode * dn1 = chainRoot->addDynamicRotation(sn1,Math::makeVector(0,1,0),Math::makeInterval((float)-Math::pi/2,(float)Math::pi/2),0);
 				DynamicNode * dn2 = chainRoot->addDynamicRotation(dn1,Math::makeVector(0,0,1),Math::makeInterval((float)-Math::pi/2,(float)Math::pi/2),0);
 
 				lastNode->addSon(t1);
@@ -165,14 +155,13 @@ namespace Application
 				SceneGraph::Translate * t2 = new SceneGraph::Translate(Math::makeVector(SPHERE_RADIUS/2,0.0f,0.0f));
 				SceneGraph::Rotate * r2 = new SceneGraph::Rotate(90.0f*Math::pi/180.0f, Math::makeVector(0,1,0));
 				
-				StaticNode * sn1 = chainRoot->addStaticTranslation(dn2,t2->getTranslation());
+				StaticNode * sn2 = chainRoot->addStaticTranslation(dn2,t2->getTranslation());
+				StaticNode * sn3 = chainRoot->addStaticEulerRotation(sn2,0,r2->getAngle(),0);
 
 				lastNode->addSon(t2);
 					t2->addSon(r2);
 						r2->addSon(new SceneGraph::Cylinder(chainMaterial,CYLINDER_RADIUS,CYLINDER_RADIUS,CYLINDER_HEIGHT));
 				lastNode = t2;
-
-				secondNode = sn1;
 			}
 
 			return root;
