@@ -8,7 +8,7 @@ namespace SceneGraph
 	class Transform : public Group
 	{
 	private:
-		/// \brief	The transform matrix storage[16].
+		/// \brief	The transform matrix storage[ 16].
 		GLfloat m_transformStorage[16] ;
 
 	protected:

@@ -11,13 +11,15 @@ namespace Animation
 	{
 	private:
 		Animation::KinematicChain *m_kinematicChain;
-		Animation::KinematicChain::StaticNode *m_lastNode;
+		Animation::KinematicChain::Node *m_lastNode;
 
 	public:
-		CyclicCoordinateDescent(Animation::KinematicChain *kinematicChain, Animation::KinematicChain::StaticNode *lastNode);
+		CyclicCoordinateDescent(Animation::KinematicChain *kinematicChain, Animation::KinematicChain::Node *lastNode);
 		~CyclicCoordinateDescent();
 
-		void convergeToward(Math::Vector3f finalPosition, float angle);
+		void convergeToward(Math::Vector3f target, float maxAngle);
+		bool solve(Math::Vector3f target, float maxAngle);
+		void ccd(Math::Vector3f constraint, float maxAngle);
 	};
 }
 

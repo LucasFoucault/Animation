@@ -1,9 +1,9 @@
 #ifndef _HelperGl_LightServer_H
 #define _HelperGl_LightServer_H
 
-#include <HelperGl/Color.h>
 #include <GL/freeglut.h>
 #include <Math/Vectorf.h>
+#include <HelperGl\Color.h>
 #include <set>
 #include <vector>
 #include <algorithm>

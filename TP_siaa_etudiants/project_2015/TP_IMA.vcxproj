@@ -138,6 +138,7 @@ copy "$(ProjectDir)\..\..\dependencies_ima\lib2015\$(Configuration)\*.dll" "$(Ou
     <ClInclude Include="..\src\Animation\KinematicChain.h" />
     <ClInclude Include="..\src\Animation\Particle.h" />
     <ClInclude Include="..\src\Animation\ParticleSystem.h" />
+    <ClInclude Include="..\src\Animation\PonctualMass.h" />
     <ClInclude Include="..\src\Animation\SpringMassSystem.h" />
     <ClInclude Include="..\src\Application\ApplicationSelection.h" />
     <ClInclude Include="..\src\Application\Base.h" />
